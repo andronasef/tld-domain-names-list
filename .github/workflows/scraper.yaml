@@ -3,6 +3,7 @@ name: Daily List Updater
 on:
   schedule:
     - cron: '0 0 * * *'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -13,14 +14,14 @@ jobs:
         with:
           node-version: 'lts/*'
       - name: Install dependencies and run the Scraper
-        run: npm install && npm run scraper
+        run: |
+          npm install
+          npm run scraper
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set current date as env variable
-        run: echo "NOW=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
 
       - name: Saving new list
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: $NOW
+          # emvironment variable NOW is used to set the commit message
+          commit_message: '🤖 List updated!'
